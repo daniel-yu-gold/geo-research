@@ -1,0 +1,7 @@
+requirement_id,requirement,current_real_count,target_count,current_status,source_files,what_counts_as_real,what_does_not_count,next_action
+V001,服务商有效访谈,0,5,未开始,templates/interview_tracker.csv;templates/evidence_index.csv,真实服务商或抖音本地生活运营者访谈且有原话/截图/纪要,"示例姓名、示例公司、未发生的访谈、只有公开资料推断",发送外联并把真实回复转成访谈
+V002,外联有效回复,0,5,未开始,templates/outreach_reply_log.csv;templates/outreach_batch.csv,真实服务商对外联消息的回复且能判断兴趣/反对/约访意愿,"待发送状态、自己写的话术、未回复记录",优先发送 L014/L017/L015 并记录回复
+V003,真实门店 AI 回答记录,0,60,未开始,templates/answer_runs.csv;templates/evidence_index.csv,1 家真实门店 x 20 prompts x 3 AI 入口的原始回答和截图,"示例问题、粘贴原始回答占位、无截图路径的测试",拿到真实门店和竞品后执行 Issue #1
+V004,真实门店报告,0,1,未开始,templates/report_scorecard.csv;13_real_store_report_template.md;templates/evidence_index.csv,基于真实 answer_runs 和截图生成的单店报告,"06 的虚构样例、只按模板空写的报告",完成真实 AI 测试后生成报告
+V005,服务商看真实报告后的反馈,0,2,未开始,templates/report_feedback.csv;templates/evidence_index.csv,至少 2 个服务商看过真实报告并给出试讲/试点/付费反馈,"看虚构样例后的泛泛评价、没有真实报告的口头兴趣",拿真实报告给服务商看并回填
+V006,最终 Go/No-Go 修订,0,1,未开始,00_decision_memo.md;15_final_research_synthesis.md;29_goal_completion_audit.md;templates/go_no_go_evidence_scorecard.csv,基于 V001-V005 真实证据修订后的进入判断,"桌面研究结论、未结合真实证据的判断",完成真实验证后更新最终判断
