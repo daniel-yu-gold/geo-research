@@ -1,0 +1,7 @@
+dimension,evidence_question,source_files,evidence_summary,score_0_to_3,decision_impact,open_risk,next_action
+customer_demand,Do service providers want to use or resell this?,templates/interview_tracker.csv;templates/report_feedback.csv,,0,Blocks Go until real interviews exist,,Run Issue #3 and Issue #4
+ai_difference,Do real AI answers show explainable store or competitor gaps?,templates/answer_runs.csv;templates/report_scorecard.csv,,0,Blocks Go until real-store test exists,,Run Issue #1
+report_sellability,Can the report enter sales monthly report renewal or upsell workflows?,templates/report_feedback.csv;evidence/reports/,,0,Blocks Go until real report feedback exists,,Run Issue #2 and Issue #4
+business_viability,Is pricing and delivery cost workable?,templates/interview_tracker.csv;14_metric_dictionary_and_experiment_log.md,,0,Blocks MVP until price and cost are validated,,Record delivery time and price feedback
+competition_risk,Is this meaningfully different from existing Douyin tools and manual reports?,templates/interview_tracker.csv;24_domestic_substitute_and_competition_scan.md,,0,High overlap pushes Pivot or No-Go,,Ask overlap questions in interviews
+technical_feasibility,Can v0/v1 be delivered without risky automation?,templates/answer_runs.csv;05_technical_feasibility_mvp_architecture.md;tools/answer-scorer.html,,0,High cost or instability pushes Continue Validation or Pivot,,Run one full manual pilot
