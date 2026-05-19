@@ -50,6 +50,7 @@
 - [29_goal_completion_audit.md](./29_goal_completion_audit.md)：按原始 goal 逐项审计当前证据、缺口和完成条件。
 - [30_first_outreach_batch.md](./30_first_outreach_batch.md)：第一批 6 个服务商外联作战清单、定制话术和访谈判级规则。
 - [31_contact_channel_discovery.md](./31_contact_channel_discovery.md)：第一批服务商公开联系入口核验和外联状态记录。
+- [32_github_review_and_iteration_guide.md](./32_github_review_and_iteration_guide.md)：GitHub review 路线、关键质疑问题和下一轮真实验证输入/输出。
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
