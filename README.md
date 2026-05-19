@@ -55,6 +55,8 @@
 - [34_issue_1_execution_packet.md](./34_issue_1_execution_packet.md)：Issue #1 真实门店 AI 可见性测试执行包，包含当天工作流和门店信息采集字段。
 - [35_issue_3_service_provider_interview_packet.md](./35_issue_3_service_provider_interview_packet.md)：Issue #3 服务商访谈执行包，包含 20 分钟访谈结构、信号分级和记录字段。
 - [36_issue_2_report_generation_packet.md](./36_issue_2_report_generation_packet.md)：Issue #2 真实门店报告生成执行包，规定 scorecard、finding cards、商家摘要和验收标准。
+- [37_issue_4_report_feedback_packet.md](./37_issue_4_report_feedback_packet.md)：Issue #4 真实报告反馈验证执行包，判断服务商是否愿意试讲、试点或付费。
+- [38_issue_5_go_no_go_decision_packet.md](./38_issue_5_go_no_go_decision_packet.md)：Issue #5 最终 Go/No-Go 决策执行包，把真实证据转成进入、继续验证、转向或放弃判断。
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
