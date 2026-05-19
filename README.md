@@ -57,6 +57,7 @@
 - [36_issue_2_report_generation_packet.md](./36_issue_2_report_generation_packet.md)：Issue #2 真实门店报告生成执行包，规定 scorecard、finding cards、商家摘要和验收标准。
 - [37_issue_4_report_feedback_packet.md](./37_issue_4_report_feedback_packet.md)：Issue #4 真实报告反馈验证执行包，判断服务商是否愿意试讲、试点或付费。
 - [38_issue_5_go_no_go_decision_packet.md](./38_issue_5_go_no_go_decision_packet.md)：Issue #5 最终 Go/No-Go 决策执行包，把真实证据转成进入、继续验证、转向或放弃判断。
+- [39_current_execution_status.md](./39_current_execution_status.md)：当前执行状态摘要，说明 P0 issue 卡点、下一步顺序和 goal 完成前缺口。
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
