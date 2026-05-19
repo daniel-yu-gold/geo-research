@@ -1,0 +1,2 @@
+finding_id,store_id,finding_title,scenario,related_prompt_ids,ai_entrances,target_store_performance,competitor_performance,inferred_reason,task_opportunity,evidence_ids,evidence_paths,merchant_report_ready,confidence,notes
+F001,S_REAL_001,,,,,,,,,,,否,低,
