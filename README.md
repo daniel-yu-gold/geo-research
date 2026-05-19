@@ -62,6 +62,7 @@
 - [41_outreach_reply_to_interview_workflow.md](./41_outreach_reply_to_interview_workflow.md)：外联回复到访谈证据工作流，规定回复记录、分级、跟进和进入真实门店测试的口径。
 - [42_real_evidence_gate.md](./42_real_evidence_gate.md)：真实证据门槛与计数规则，避免把示例行或准备动作误判成验证完成。
 - [43_first_send_channel_packet.md](./43_first_send_channel_packet.md)：第一轮可发送入口核验包，列出 B002 优先对象的官网联系入口、发送顺序和回填规则。
+- [44_priority_lead_source_evidence.md](./44_priority_lead_source_evidence.md)：优先外联线索来源证据，说明 L014/L017/L015 的公开信号、适配原因和仍需访谈核验的问题。
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
