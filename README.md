@@ -52,6 +52,7 @@
 - [31_contact_channel_discovery.md](./31_contact_channel_discovery.md)：第一批服务商公开联系入口核验和外联状态记录。
 - [32_github_review_and_iteration_guide.md](./32_github_review_and_iteration_guide.md)：GitHub review 路线、关键质疑问题和下一轮真实验证输入/输出。
 - [33_validation_backlog_and_github_issues.md](./33_validation_backlog_and_github_issues.md)：真实验证 backlog，把剩余工作拆成可跟踪、可关闭的 GitHub issue。
+- [34_issue_1_execution_packet.md](./34_issue_1_execution_packet.md)：Issue #1 真实门店 AI 可见性测试执行包，包含当天工作流和门店信息采集字段。
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
