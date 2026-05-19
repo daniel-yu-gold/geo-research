@@ -1,0 +1,2 @@
+feedback_id,date,service_provider,reviewer_role,city,report_id,store_id,report_version,merchant_understandability,most_valuable_page,least_useful_page,best_use_case,willing_to_show_to_merchant,willing_to_provide_next_store,willing_to_pay_trial,acceptable_price,preferred_pricing_model,must_change_before_selling,key_quotes,next_step,signal_grade,evidence_ids,notes
+RF001,2026-05-19,示例服务商,负责人,杭州,R_REAL_001,S_REAL_001,v1,待确认,,,,待确认,待确认,待确认,,,,,,,
