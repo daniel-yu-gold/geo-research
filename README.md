@@ -59,6 +59,7 @@
 - [38_issue_5_go_no_go_decision_packet.md](./38_issue_5_go_no_go_decision_packet.md)：Issue #5 最终 Go/No-Go 决策执行包，把真实证据转成进入、继续验证、转向或放弃判断。
 - [39_current_execution_status.md](./39_current_execution_status.md)：当前执行状态摘要，说明 P0 issue 卡点、下一步顺序和 goal 完成前缺口。
 - [40_second_outreach_batch.md](./40_second_outreach_batch.md)：第二批服务商外联补充清单，扩大约访样本并降低第一批联系方式卡点风险。
+- [41_outreach_reply_to_interview_workflow.md](./41_outreach_reply_to_interview_workflow.md)：外联回复到访谈证据工作流，规定回复记录、分级、跟进和进入真实门店测试的口径。
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
