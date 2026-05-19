@@ -1,0 +1,2 @@
+store_id,store_name,total_prompts,target_mentioned_count,strong_recommend_count,competitor_only_count,accuracy_issue_count,task_opportunity_count,ai_visibility_score,strong_recommend_rate,competitor_pressure_rate,accuracy_score,scenario_coverage_score,final_score,key_findings,next_month_tasks,go_no_go_note
+S001,示例门店,20,6,3,9,2,12,42,15%,45%,70,低,42,约会和生日场景弱于竞品,补团购标题;短视频;达人Brief,可继续跑真实样例

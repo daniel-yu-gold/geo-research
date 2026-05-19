@@ -1,0 +1,2 @@
+evidence_id,date,evidence_type,related_file,related_record_id,store_id,interview_id,platform,artifact_path,source_url_or_context,summary,used_in,verification_status,notes
+E001,2026-05-19,ai_screenshot,templates/answer_runs.csv,R001,S001,,豆包,evidence/ai_runs/R001.png,上海 静安寺示例问题,示例 AI 回答截图,真实门店报告;Go-No-Go,待补真实证据,示例行

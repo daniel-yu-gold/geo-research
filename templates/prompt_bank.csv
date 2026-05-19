@@ -1,0 +1,17 @@
+prompt_id,industry,city,business_area,scenario,intent,priority,prompt_template,notes
+P001,餐饮,{city},{business_area},约会,品类推荐,高,{city}{business_area}附近适合约会的{category}推荐，环境好一点，人均{price_band}。,不要直接写目标门店名
+P002,餐饮,{city},{business_area},生日,场景推荐,高,{city}适合过生日的{category}店，有仪式感，最好能提前预约。,观察是否出现竞品
+P003,餐饮,{city},{business_area},朋友聚餐,场景推荐,中,{city}{business_area}适合朋友聚餐的{category}，不要太吵，人均{price_band}。,场景泛化测试
+P004,餐饮,{city},{business_area},游客打卡,场景推荐,中,{city}游客逛{business_area}后适合去哪家{category}吃饭？,本地旅游场景
+P005,餐饮,{city},{business_area},团购,交易推荐,高,{city}{business_area}抖音上有团购、适合两个人吃的{category}推荐。,测试抖音团购是否进入回答
+P006,餐饮,{city},{business_area},性价比,交易推荐,中,{city}{business_area}人均{price_band}左右、性价比高的{category}有哪些？,价格带测试
+P007,餐饮,{city},{business_area},包间,信息确认,中,{city}{business_area}适合小型聚会、有包间或安静座位的{category}推荐。,服务设施
+P008,餐饮,{city},{business_area},品牌词,品牌确认,高,{store_name}适合约会吗？人均大概多少？,允许写目标门店名
+P009,餐饮,{city},{business_area},对比,竞品对比,高,{store_name}和{competitor_name}哪个更适合生日聚餐？,对比测试
+P010,餐饮,{city},{business_area},信息准确,信息确认,高,{store_name}营业时间、地址、人均和特色是什么？,错误信息测试
+P101,丽人,{city},{business_area},美甲,品类推荐,高,{city}{business_area}附近评价好的美甲店推荐，价格不要太贵。,行业扩展
+P102,丽人,{city},{business_area},约会前,场景推荐,高,{city}{business_area}适合约会前做造型或美甲的店推荐。,场景消费
+P103,丽人,{city},{business_area},团购,交易推荐,中,{city}{business_area}抖音上有团购的美甲美睫店有哪些？,抖音团购
+P201,酒旅,{city},{business_area},亲子,场景推荐,高,{city}适合周末亲子住一晚的酒店或民宿推荐。,行业扩展
+P202,酒旅,{city},{business_area},游客,场景推荐,高,第一次去{city}玩，住在{business_area}附近有什么酒店推荐？,游客场景
+P203,酒旅,{city},{business_area},套餐,交易推荐,中,{city}{business_area}抖音上有套餐或优惠的酒店推荐。,抖音套餐

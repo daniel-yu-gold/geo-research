@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 回答评分器</title>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --ink: #17202c;
+      --muted: #667085;
+      --line: #d9e1ec;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --rose: #be123c;
+      --green: #15803d;
+      --soft-teal: #e6f4f2;
+      --soft-blue: #eaf0ff;
+      --soft-amber: #fff4df;
+      --soft-rose: #ffe8ee;
+      --soft-green: #e8f6ed;
+      --shadow: 0 16px 36px rgba(23, 32, 44, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      background: #111827;
+      color: #f8fafc;
+      padding: 22px;
+      display: grid;
+      align-content: start;
+      gap: 16px;
+    }
+
+    .brand {
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+      display: grid;
+      gap: 6px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .brand h1 {
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .brand p, label, .hint {
+      color: #a9b7c8;
+      font-size: 13px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 11px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      min-height: 42px;
+    }
+
+    .btn.primary {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #fff;
+    }
+
+    .btn.danger {
+      background: var(--rose);
+      border-color: var(--rose);
+      color: #fff;
+    }
+
+    .stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .topbar {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .metric strong {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .panel h3 {
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1120px;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #536073;
+      font-weight: 700;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .tag {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      background: #eef2f6;
+      color: #354153;
+    }
+
+    .tag.green { background: var(--soft-green); color: var(--green); }
+    .tag.rose { background: var(--soft-rose); color: var(--rose); }
+    .tag.amber { background: var(--soft-amber); color: var(--amber); }
+    .tag.blue { background: var(--soft-blue); color: var(--blue); }
+    .tag.teal { background: var(--soft-teal); color: var(--teal); }
+
+    .inline-input {
+      min-width: 120px;
+      padding: 7px 8px;
+      border-radius: 8px;
+    }
+
+    .small-select {
+      min-width: 86px;
+      padding: 7px 8px;
+      border-radius: 8px;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mini {
+      min-height: 32px;
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      background: #0f172a;
+      color: #e5edf6;
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 120px;
+      overflow: auto;
+      font-size: 12px;
+    }
+
+    .toast {
+      min-height: 22px;
+      color: #b7c4d6;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1120px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { padding: 16px; }
+      .main { padding: 14px; }
+      .topbar { grid-template-columns: 1fr; }
+      .actions { justify-content: flex-start; }
+      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .metrics, .two { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Answer Scorer</h1>
+        <p>AI 回答人工标注与评分</p>
+      </div>
+
+      <div class="stack">
+        <div class="field">
+          <label for="storeId">门店 ID</label>
+          <input id="storeId" value="S001">
+        </div>
+        <div class="field">
+          <label for="storeName">门店名</label>
+          <input id="storeName" value="晴川日料 Bistro">
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="platform">AI 入口</label>
+            <select id="platform">
+              <option>豆包</option>
+              <option>DeepSeek</option>
+              <option>Kimi</option>
+              <option>腾讯元宝</option>
+              <option>百度 AI/文心</option>
+              <option>夸克</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="promptId">Prompt ID</label>
+            <input id="promptId" value="GEO-001">
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="device">设备/端</label>
+            <input id="device" value="Windows 浏览器">
+          </div>
+          <div class="field">
+            <label for="accountStatus">账号状态</label>
+            <select id="accountStatus">
+              <option>新账号</option>
+              <option>常用账号</option>
+              <option>未登录</option>
+              <option>未知</option>
+            </select>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="sessionType">对话状态</label>
+            <select id="sessionType">
+              <option>新对话</option>
+              <option>连续追问</option>
+              <option>复测</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="searchStatus">联网/搜索</label>
+            <select id="searchStatus">
+              <option>未知</option>
+              <option>自动搜索</option>
+              <option>手动开启</option>
+              <option>未联网</option>
+            </select>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="locationPermission">定位权限</label>
+            <select id="locationPermission">
+              <option>不适用</option>
+              <option>已授权</option>
+              <option>未授权</option>
+              <option>未知</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cityContext">城市/商圈</label>
+            <input id="cityContext" value="杭州 湖滨">
+          </div>
+        </div>
+        <div class="field">
+          <label for="screenshotPath">截图/证据路径</label>
+          <input id="screenshotPath" value="">
+        </div>
+        <div class="field">
+          <label for="question">测试问题</label>
+          <textarea id="question">杭州湖滨附近适合约会的日料店推荐，环境好一点，人均 200 左右。</textarea>
+        </div>
+        <div class="field">
+          <label for="rawAnswer">AI 原始回答摘要</label>
+          <textarea id="rawAnswer">回答推荐了山岚割烹，未提到晴川日料 Bistro。</textarea>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="targetMentioned">目标门店</label>
+            <select id="targetMentioned">
+              <option>否</option>
+              <option>是</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="strongRecommend">强推荐</label>
+            <select id="strongRecommend">
+              <option>否</option>
+              <option>是</option>
+            </select>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="targetPosition">位置</label>
+            <input id="targetPosition" value="">
+          </div>
+          <div class="field">
+            <label for="accuracyIssue">信息错误</label>
+            <select id="accuracyIssue">
+              <option>无</option>
+              <option>轻微</option>
+              <option>明显</option>
+              <option>关键错误</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="competitors">出现竞品</label>
+          <input id="competitors" value="山岚割烹">
+        </div>
+        <div class="field">
+          <label for="reason">推荐理由</label>
+          <input id="reason" value="竞品被推荐，目标门店未出现">
+        </div>
+        <div class="field">
+          <label for="task">可转任务</label>
+          <input id="task" value="补约会场景短视频和团购标题">
+        </div>
+        <div class="two">
+          <button class="btn primary" id="addRun">添加记录</button>
+          <button class="btn" id="loadSample">载入样例</button>
+        </div>
+        <button class="btn danger" id="clearRows">清空记录</button>
+        <div class="toast" id="toast"></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="title">晴川日料 Bistro · 回答评分</h2>
+          <p class="sub">人工标注 AI 回答，生成门店级 scorecard 和 answer_runs CSV。</p>
+        </div>
+        <div class="actions">
+          <button class="btn" id="copyAnswers">复制 answer_runs CSV</button>
+          <button class="btn" id="copyScore">复制 scorecard CSV</button>
+          <button class="btn" id="copyEvidence">复制证据索引</button>
+          <button class="btn" id="copyReport">复制报告草稿</button>
+          <button class="btn primary" id="downloadBoth">下载 CSV</button>
+        </div>
+      </header>
+
+      <section class="metrics" aria-label="指标">
+        <div class="metric"><strong id="mTotal">0</strong><span>Prompt 数</span></div>
+        <div class="metric"><strong id="mVisibility">0%</strong><span>AI 推荐可见性</span></div>
+        <div class="metric"><strong id="mStrong">0%</strong><span>强推荐率</span></div>
+        <div class="metric"><strong id="mCompetitor">0%</strong><span>竞品压制率</span></div>
+        <div class="metric"><strong id="mAccuracy">100</strong><span>信息准确性</span></div>
+        <div class="metric"><strong id="mTask">0%</strong><span>可转任务率</span></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>回答记录</h3>
+          <span class="tag teal" id="rowCount">0 条</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>入口</th>
+                <th>环境</th>
+                <th>问题</th>
+                <th>目标门店</th>
+                <th>强推荐</th>
+                <th>竞品</th>
+                <th>错误</th>
+                <th>可转任务</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>Scorecard 预览</h3>
+          <span class="tag blue">可复制到 report_scorecard.csv</span>
+        </div>
+        <div class="output" id="scoreOutput"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>商家报告草稿</h3>
+          <span class="tag teal">可复制为 Markdown</span>
+        </div>
+        <div class="output" id="reportOutput"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h3>证据索引预览</h3>
+          <span class="tag blue">可复制到 evidence_index.csv</span>
+        </div>
+        <div class="output" id="evidenceOutput"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let runs = [];
+    let runSeq = 1;
+
+    function nowText() {
+      const date = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+    function addCurrentRun() {
+      const run = {
+        run_id: `R${String(runSeq++).padStart(3, "0")}`,
+        prompt_id: $("promptId").value.trim(),
+        store_id: $("storeId").value.trim(),
+        platform: $("platform").value,
+        test_time: nowText(),
+        device: $("device").value.trim(),
+        account_status: $("accountStatus").value,
+        session_type: $("sessionType").value,
+        search_status: $("searchStatus").value,
+        location_permission: $("locationPermission").value,
+        city_context: $("cityContext").value.trim(),
+        screenshot_path: $("screenshotPath").value.trim(),
+        question_text: $("question").value.trim(),
+        raw_answer: $("rawAnswer").value.trim(),
+        target_mentioned: $("targetMentioned").value,
+        target_position: $("targetPosition").value.trim(),
+        strong_recommendation: $("strongRecommend").value,
+        competitors_mentioned: $("competitors").value.trim(),
+        cited_sources: "",
+        source_types: "",
+        accuracy_issues: $("accuracyIssue").value,
+        recommendation_reason: $("reason").value.trim(),
+        task_opportunity: $("task").value.trim(),
+        score_notes: ""
+      };
+      runs.push(run);
+      render();
+      $("toast").textContent = "已添加记录";
+    }
+
+    function loadSample() {
+      runs = [
+        sampleRun("GEO-001", "豆包", "杭州湖滨附近适合约会的日料店推荐，环境好一点，人均 200 左右。", "回答推荐山岚割烹，未提到晴川日料。", "否", "", "否", "山岚割烹", "无", "竞品被推荐", "补约会场景短视频"),
+        sampleRun("GEO-002", "Kimi", "杭州适合过生日的日料店，有仪式感，最好能提前预约。", "推荐月见和牛寿喜烧，未提到晴川日料。", "否", "", "否", "月见和牛寿喜烧", "无", "生日场景被竞品占位", "补生日服务 FAQ"),
+        sampleRun("GEO-003", "DeepSeek", "杭州湖滨抖音上有团购、适合两个人吃的日料推荐。", "提到晴川日料但排序靠后，理由泛化。", "是", "4", "否", "月见和牛寿喜烧", "轻微", "出现但不强", "改团购标题"),
+        sampleRun("GEO-004", "腾讯元宝", "杭州湖滨适合朋友聚餐的日料，安静一点，人均 200 左右。", "晴川日料第 2 位出现，推荐理由为环境安静。", "是", "2", "是", "青木酒场", "无", "朋友聚餐场景有基础", "放大聚餐脚本")
+      ];
+      runSeq = runs.length + 1;
+      render();
+      $("toast").textContent = "已载入样例";
+    }
+
+    function sampleRun(promptId, platform, question, answer, mentioned, position, strong, competitors, issue, reason, task) {
+      return {
+        run_id: `R${String(runs.length + 1).padStart(3, "0")}`,
+        prompt_id: promptId,
+        store_id: $("storeId").value.trim(),
+        platform,
+        test_time: nowText(),
+        device: $("device").value.trim(),
+        account_status: $("accountStatus").value,
+        session_type: $("sessionType").value,
+        search_status: $("searchStatus").value,
+        location_permission: $("locationPermission").value,
+        city_context: $("cityContext").value.trim(),
+        screenshot_path: "",
+        question_text: question,
+        raw_answer: answer,
+        target_mentioned: mentioned,
+        target_position: position,
+        strong_recommendation: strong,
+        competitors_mentioned: competitors,
+        cited_sources: "",
+        source_types: "",
+        accuracy_issues: issue,
+        recommendation_reason: reason,
+        task_opportunity: task,
+        score_notes: ""
+      };
+    }
+
+    function uniquePromptCount() {
+      return new Set(runs.map((run) => run.prompt_id || run.question_text)).size;
+    }
+
+    function metrics() {
+      const total = runs.length || 0;
+      const mentioned = runs.filter((run) => run.target_mentioned === "是").length;
+      const strong = runs.filter((run) => run.strong_recommendation === "是").length;
+      const competitorOnly = runs.filter((run) => run.competitors_mentioned && run.target_mentioned !== "是").length;
+      const issues = runs.filter((run) => run.accuracy_issues && run.accuracy_issues !== "无").length;
+      const tasks = runs.filter((run) => run.task_opportunity).length;
+      const pct = (n) => total ? Math.round((n / total) * 100) : 0;
+      const accuracy = total ? Math.max(0, Math.round(100 - (issues / total) * 30)) : 100;
+      const finalScore = Math.round((pct(mentioned) * 0.3) + (pct(strong) * 0.2) + ((100 - pct(competitorOnly)) * 0.2) + (accuracy * 0.15) + (pct(tasks) * 0.15));
+      return { total, mentioned, strong, competitorOnly, issues, tasks, visibility: pct(mentioned), strongRate: pct(strong), competitorRate: pct(competitorOnly), accuracy, taskRate: pct(tasks), finalScore };
+    }
+
+    function render() {
+      const m = metrics();
+      $("title").textContent = `${$("storeName").value.trim()} · 回答评分`;
+      $("mTotal").textContent = m.total;
+      $("mVisibility").textContent = `${m.visibility}%`;
+      $("mStrong").textContent = `${m.strongRate}%`;
+      $("mCompetitor").textContent = `${m.competitorRate}%`;
+      $("mAccuracy").textContent = m.accuracy;
+      $("mTask").textContent = `${m.taskRate}%`;
+      $("rowCount").textContent = `${runs.length} 条`;
+
+      $("rows").innerHTML = runs.map((run, index) => `
+        <tr>
+          <td>${escapeHtml(run.run_id)}</td>
+          <td><span class="tag blue">${escapeHtml(run.platform)}</span></td>
+          <td>${escapeHtml([run.device, run.account_status, run.search_status, run.location_permission].filter(Boolean).join(" / ") || "-")}</td>
+          <td>${escapeHtml(run.question_text)}</td>
+          <td>${run.target_mentioned === "是" ? '<span class="tag green">是</span>' : '<span class="tag rose">否</span>'}</td>
+          <td>${run.strong_recommendation === "是" ? '<span class="tag green">是</span>' : '<span class="tag amber">否</span>'}</td>
+          <td>${escapeHtml(run.competitors_mentioned || "-")}</td>
+          <td>${escapeHtml(run.accuracy_issues || "无")}</td>
+          <td>${escapeHtml(run.task_opportunity || "-")}</td>
+          <td class="row-actions"><button class="btn mini" data-delete="${index}">删除</button></td>
+        </tr>
+      `).join("");
+
+      $("scoreOutput").textContent = scorecardCsv();
+      $("reportOutput").textContent = reportMarkdown();
+      $("evidenceOutput").textContent = evidenceIndexCsv();
+    }
+
+    function answerRunsCsv() {
+      const header = ["run_id","prompt_id","store_id","platform","test_time","device","account_status","session_type","search_status","location_permission","city_context","screenshot_path","question_text","raw_answer","target_mentioned","target_position","strong_recommendation","competitors_mentioned","cited_sources","source_types","accuracy_issues","recommendation_reason","task_opportunity","score_notes"];
+      const body = runs.map((run) => header.map((key) => run[key] ?? ""));
+      return [header, ...body].map((row) => row.map(csvCell).join(",")).join("\n");
+    }
+
+    function scorecardCsv() {
+      const m = metrics();
+      const header = ["store_id","store_name","total_prompts","target_mentioned_count","strong_recommend_count","competitor_only_count","accuracy_issue_count","task_opportunity_count","ai_visibility_score","strong_recommend_rate","competitor_pressure_rate","accuracy_score","scenario_coverage_score","final_score","key_findings","next_month_tasks","go_no_go_note"];
+      const findings = summarizeFindings();
+      const tasks = summarizeTasks();
+      const row = [
+        $("storeId").value.trim(),
+        $("storeName").value.trim(),
+        m.total,
+        m.mentioned,
+        m.strong,
+        m.competitorOnly,
+        m.issues,
+        m.tasks,
+        m.visibility,
+        `${m.strongRate}%`,
+        `${m.competitorRate}%`,
+        m.accuracy,
+        m.taskRate >= 50 ? "中高" : "低",
+        m.finalScore,
+        findings,
+        tasks,
+        m.taskRate >= 30 ? "可继续生成真实报告" : "需要更多有效差异"
+      ];
+      return [header, row].map((line) => line.map(csvCell).join(",")).join("\n");
+    }
+
+    function evidenceIndexCsv() {
+      const header = ["evidence_id","date","evidence_type","related_file","related_record_id","store_id","interview_id","platform","artifact_path","source_url_or_context","summary","used_in","verification_status","notes"];
+      const body = runs.map((run, index) => {
+        const evidenceId = `E${String(index + 1).padStart(3, "0")}`;
+        const date = (run.test_time || nowText()).slice(0, 10);
+        const evidenceType = run.screenshot_path ? "ai_screenshot" : "raw_answer";
+        return [
+          evidenceId,
+          date,
+          evidenceType,
+          "templates/answer_runs.csv",
+          run.run_id,
+          run.store_id,
+          "",
+          run.platform,
+          run.screenshot_path || "",
+          [run.city_context, run.question_text].filter(Boolean).join(" | "),
+          summarizeEvidence(run),
+          "真实门店报告;Go-No-Go",
+          run.screenshot_path ? "待核验" : "缺截图",
+          run.screenshot_path ? "" : "建议补充截图路径"
+        ];
+      });
+      return [header, ...body].map((row) => row.map(csvCell).join(",")).join("\n");
+    }
+
+    function summarizeEvidence(run) {
+      const parts = [];
+      if (run.target_mentioned === "是") parts.push("目标门店出现");
+      if (run.strong_recommendation === "是") parts.push("强推荐");
+      if (run.competitors_mentioned) parts.push(`竞品：${run.competitors_mentioned}`);
+      if (run.accuracy_issues && run.accuracy_issues !== "无") parts.push(`信息问题：${run.accuracy_issues}`);
+      if (run.task_opportunity) parts.push(`任务：${run.task_opportunity}`);
+      return parts.join("；") || shortText(run.raw_answer || "AI 原始回答", 40);
+    }
+
+    function summarizeFindings() {
+      const competitorOnly = runs.filter((run) => run.competitors_mentioned && run.target_mentioned !== "是").length;
+      const issueCount = runs.filter((run) => run.accuracy_issues && run.accuracy_issues !== "无").length;
+      const parts = [];
+      if (competitorOnly) parts.push(`${competitorOnly} 条回答出现竞品但未出现目标门店`);
+      if (issueCount) parts.push(`${issueCount} 条回答存在信息不完整或错误`);
+      if (!parts.length) parts.push("目标门店有一定可见性，需复测稳定性");
+      return parts.join("; ");
+    }
+
+    function summarizeTasks() {
+      return Array.from(new Set(runs.map((run) => run.task_opportunity).filter(Boolean))).slice(0, 5).join("; ");
+    }
+
+    function reportMarkdown() {
+      const m = metrics();
+      const storeName = $("storeName").value.trim() || "未命名门店";
+      const storeId = $("storeId").value.trim() || "未填写";
+      const platforms = Array.from(new Set(runs.map((run) => run.platform).filter(Boolean))).join("、") || "待填写";
+      const cityContexts = Array.from(new Set(runs.map((run) => run.city_context).filter(Boolean))).join("、") || "待填写";
+      const testedAt = runs.length ? `${runs[0].test_time} 至 ${runs[runs.length - 1].test_time}` : nowText();
+      const findingRows = topFindingRows();
+      const taskRows = topTaskRows();
+      const promptRows = runs.slice(0, 20).map((run) => (
+        `| ${run.prompt_id || "-"} | ${run.platform || "-"} | ${shortText(run.question_text, 28)} | ${run.target_mentioned || "-"} | ${run.strong_recommendation || "-"} | ${shortText(run.competitors_mentioned || "-", 18)} | ${run.accuracy_issues || "无"} | ${shortText(run.task_opportunity || "-", 22)} |`
+      ));
+      const summary = merchantSummary(m, storeName);
+
+      return [
+        `# ${storeName} AI 可见性体检报告草稿`,
+        "",
+        "## 基础信息",
+        "",
+        "| 字段 | 内容 |",
+        "| --- | --- |",
+        `| 门店 ID | ${storeId} |`,
+        `| 门店名 | ${storeName} |`,
+        `| 城市/商圈 | ${cityContexts} |`,
+        `| 测试日期 | ${testedAt} |`,
+        `| 测试 AI 入口 | ${platforms} |`,
+        `| Prompt 数 | ${m.total} |`,
+        "",
+        "## 一句话结论",
+        "",
+        `> ${summary}`,
+        "",
+        "## 总览评分",
+        "",
+        "| 指标 | 分数/比例 | 判断 |",
+        "| --- | ---: | --- |",
+        `| AI 推荐可见性 | ${m.visibility}% | ${m.visibility >= 50 ? "有基础" : "偏弱"} |`,
+        `| 强推荐率 | ${m.strongRate}% | ${m.strongRate >= 30 ? "可放大" : "需加强"} |`,
+        `| 竞品压制率 | ${m.competitorRate}% | ${m.competitorRate >= 30 ? "需关注" : "可控"} |`,
+        `| 信息准确性 | ${m.accuracy} | ${m.accuracy >= 85 ? "较好" : "需修正"} |`,
+        `| 可转任务率 | ${m.taskRate}% | ${m.taskRate >= 30 ? "可形成月度任务" : "任务不足"} |`,
+        `| 综合分 | ${m.finalScore} | ${m.finalScore >= 70 ? "建议复测并进入报告" : "需要更多有效样本"} |`,
+        "",
+        "## 关键发现",
+        "",
+        ...(findingRows.length ? findingRows : ["- 暂无足够记录，请先添加 AI 回答。"]),
+        "",
+        "## 下月任务单",
+        "",
+        "| 优先级 | 任务 | 对应问题 | 复测建议 |",
+        "| --- | --- | --- | --- |",
+        ...(taskRows.length ? taskRows : ["| 中 | 补充更多 AI 回答记录 | 当前样本不足 | 增加 20 个 prompts 后复测 |"]),
+        "",
+        "## Prompt 结果表",
+        "",
+        "| ID | AI 入口 | Prompt | 目标门店 | 强推荐 | 竞品 | 信息错误 | 可转任务 |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        ...(promptRows.length ? promptRows : ["| - | - | 暂无记录 | - | - | - | - | - |"]),
+        "",
+        "## 给商家的月报摘要",
+        "",
+        `> ${summary} 下月建议优先处理可转任务率较高的场景内容，并在完成后用同一批问题复测。`,
+        "",
+        "## 原始材料留档",
+        "",
+        "| 材料 | 文件/链接 |",
+        "| --- | --- |",
+        "| AI 原始回答 | templates/answer_runs.csv |",
+        "| 评分表 | templates/report_scorecard.csv |",
+        "| 截图和证据索引 | templates/evidence_index.csv |"
+      ].join("\n");
+    }
+
+    function topFindingRows() {
+      return runs
+        .filter((run) => run.competitors_mentioned || (run.accuracy_issues && run.accuracy_issues !== "无") || run.task_opportunity)
+        .slice(0, 5)
+        .map((run, index) => {
+          const signals = [];
+          if (run.competitors_mentioned && run.target_mentioned !== "是") signals.push(`竞品 ${run.competitors_mentioned} 被提及，目标门店未被推荐`);
+          if (run.accuracy_issues && run.accuracy_issues !== "无") signals.push(`存在${run.accuracy_issues}信息问题`);
+          if (run.task_opportunity) signals.push(`可转任务：${run.task_opportunity}`);
+          return `### 发现 ${index + 1}\n\n- Prompt：${run.question_text || "-"}\n- AI 入口：${run.platform || "-"}\n- 回答摘要：${run.raw_answer || "-"}\n- 判断：${signals.join("；") || "需继续观察"}\n`;
+        });
+    }
+
+    function topTaskRows() {
+      return Array.from(new Set(runs.map((run) => run.task_opportunity).filter(Boolean)))
+        .slice(0, 5)
+        .map((task, index) => {
+          const related = runs.find((run) => run.task_opportunity === task);
+          const priority = index === 0 ? "高" : index <= 2 ? "中" : "低";
+          return `| ${priority} | ${task} | ${shortText(related?.question_text || "-", 30)} | 完成后复测同一 prompt |`;
+        });
+    }
+
+    function merchantSummary(m, storeName) {
+      if (!m.total) return `${storeName} 尚未录入真实 AI 回答，当前报告仅为结构草稿。`;
+      if (m.competitorRate >= 30) {
+        return `${storeName} 在本轮 AI 问答测试中存在明显竞品压制，尤其需要补齐场景卖点、团购信息和可被 AI 正确理解的公开内容。`;
+      }
+      if (m.visibility >= 50 && m.taskRate >= 30) {
+        return `${storeName} 在 AI 问答中已有一定可见性，本轮重点不是重做定位，而是把已有优势转成更清晰的内容、团购和达人任务。`;
+      }
+      return `${storeName} 在本轮 AI 问答中的推荐表现偏弱，建议先补齐门店资料、场景内容和核心卖点，再用同一批问题复测。`;
+    }
+
+    function shortText(text, maxLength) {
+      const value = String(text || "");
+      return value.length > maxLength ? `${value.slice(0, maxLength - 1)}…` : value;
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return `"${text.replaceAll('"', '""')}"`;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function copy(text, message) {
+      await navigator.clipboard.writeText(text);
+      $("toast").textContent = message;
+    }
+
+    function download(name, text) {
+      const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = name;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    $("addRun").addEventListener("click", addCurrentRun);
+    $("loadSample").addEventListener("click", loadSample);
+    $("clearRows").addEventListener("click", () => {
+      runs = [];
+      runSeq = 1;
+      render();
+      $("toast").textContent = "已清空";
+    });
+    $("copyAnswers").addEventListener("click", () => copy(answerRunsCsv(), "已复制 answer_runs CSV"));
+    $("copyScore").addEventListener("click", () => copy(scorecardCsv(), "已复制 scorecard CSV"));
+    $("copyEvidence").addEventListener("click", () => copy(evidenceIndexCsv(), "已复制证据索引 CSV"));
+    $("copyReport").addEventListener("click", () => copy(reportMarkdown(), "已复制报告草稿"));
+    $("downloadBoth").addEventListener("click", () => {
+      download("answer_runs.csv", answerRunsCsv());
+      download("report_scorecard.csv", scorecardCsv());
+      download("evidence_index.csv", evidenceIndexCsv());
+      $("toast").textContent = "已下载";
+    });
+    $("rows").addEventListener("click", (event) => {
+      const target = event.target.closest("[data-delete]");
+      if (!target) return;
+      runs.splice(Number(target.dataset.delete), 1);
+      render();
+    });
+    ["storeId", "storeName"].forEach((id) => $(id).addEventListener("input", render));
+
+    render();
+  </script>
+</body>
+</html>

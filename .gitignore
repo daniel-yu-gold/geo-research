@@ -1,0 +1,12 @@
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and local scratch
+*.log
+*.tmp
+*.bak
+
+# Keep real evidence files intentional.
+# Do not ignore evidence/ because validation artifacts may be reviewed.

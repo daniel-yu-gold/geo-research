@@ -1,0 +1,2 @@
+run_id,prompt_id,store_id,platform,test_time,device,account_status,session_type,search_status,location_permission,city_context,screenshot_path,question_text,raw_answer,target_mentioned,target_position,strong_recommendation,competitors_mentioned,cited_sources,source_types,accuracy_issues,recommendation_reason,task_opportunity,score_notes
+R001,P001,S001,豆包,2026-05-19 10:00,Windows 浏览器,新账号,新对话,未知,不适用,上海 静安寺,evidence/R001.png,示例问题,粘贴原始回答,否,,否,示例竞品A,,点评;地图,无,竞品被推荐,补约会场景内容,

@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>门店 AI 可见性工作台</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --ink: #18202a;
+      --muted: #687386;
+      --line: #dce2ea;
+      --teal: #0f766e;
+      --blue: #2563eb;
+      --amber: #b45309;
+      --rose: #be123c;
+      --green: #15803d;
+      --purple: #7c3aed;
+      --soft-teal: #e6f3f1;
+      --soft-blue: #e9efff;
+      --soft-amber: #fff4df;
+      --soft-rose: #ffe8ee;
+      --soft-green: #e9f7ee;
+      --shadow: 0 16px 42px rgba(24, 32, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      background: #101821;
+      color: #edf2f7;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 4px;
+      padding: 4px 6px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .brand strong {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .brand span {
+      color: #9fb0c2;
+      font-size: 13px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav button {
+      border: 0;
+      width: 100%;
+      color: #cdd8e4;
+      background: transparent;
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .nav button.active {
+      background: #233142;
+      color: #ffffff;
+    }
+
+    .side-panel {
+      margin-top: auto;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .side-panel .label {
+      color: #9fb0c2;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .side-panel strong {
+      display: block;
+      font-size: 20px;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .topbar {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    .store-title {
+      display: grid;
+      gap: 6px;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 24px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 9px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #fff;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    select, input {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px 11px;
+      color: var(--ink);
+    }
+
+    .section {
+      display: none;
+      gap: 16px;
+    }
+
+    .section.active {
+      display: grid;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .metric .value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .metric .caption {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .bar {
+      height: 8px;
+      border-radius: 8px;
+      background: #edf1f5;
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: 8px;
+      background: var(--teal);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .findings {
+      display: grid;
+      gap: 10px;
+    }
+
+    .finding {
+      border-left: 4px solid var(--blue);
+      padding: 9px 11px;
+      background: #f8fafc;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .finding.warn {
+      border-left-color: var(--amber);
+    }
+
+    .finding.risk {
+      border-left-color: var(--rose);
+    }
+
+    .finding.good {
+      border-left-color: var(--green);
+    }
+
+    .scenario-map {
+      display: grid;
+      gap: 9px;
+    }
+
+    .scenario-row {
+      display: grid;
+      grid-template-columns: 86px minmax(0, 1fr) 70px;
+      gap: 10px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .track {
+      height: 28px;
+      background: #eef2f6;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .track span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      border-radius: 8px;
+    }
+
+    .target {
+      background: var(--teal);
+    }
+
+    .competitor {
+      background: var(--rose);
+      opacity: 0.68;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+      background: #fff;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #536073;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      background: #eef2f6;
+      color: #354153;
+    }
+
+    .tag.teal {
+      background: var(--soft-teal);
+      color: var(--teal);
+    }
+
+    .tag.blue {
+      background: var(--soft-blue);
+      color: var(--blue);
+    }
+
+    .tag.amber {
+      background: var(--soft-amber);
+      color: var(--amber);
+    }
+
+    .tag.rose {
+      background: var(--soft-rose);
+      color: var(--rose);
+    }
+
+    .tag.green {
+      background: var(--soft-green);
+      color: var(--green);
+    }
+
+    .tasks {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .task {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 13px;
+      display: grid;
+      gap: 10px;
+      background: #fff;
+    }
+
+    .task-head {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .task p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .report {
+      display: grid;
+      gap: 14px;
+      max-width: 980px;
+    }
+
+    .report-block {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .report-block p {
+      color: #394559;
+      margin-top: 8px;
+    }
+
+    .split-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .source-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .source-row {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .source-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .mobile-tabs {
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .mobile-tabs button {
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 1180px) {
+      .metrics {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+      }
+
+      .tasks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        padding: 14px;
+      }
+
+      .mobile-tabs {
+        display: flex;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+
+      .toolbar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tasks, .split-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .toolbar, .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>门店 AI 可见性</strong>
+        <span>服务商工作台样例</span>
+      </div>
+      <nav class="nav" aria-label="主导航">
+        <button class="active" data-section="overview">总览</button>
+        <button data-section="prompts">Prompt 结果</button>
+        <button data-section="tasks">下月任务</button>
+        <button data-section="merchant-report">商家月报</button>
+      </nav>
+      <div class="side-panel">
+        <div class="label">当前判断</div>
+        <strong>可试讲</strong>
+        <div class="sub">建议拿给服务商验证签约和续费价值</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="mobile-tabs" aria-label="移动导航">
+        <button class="btn primary" data-section="overview">总览</button>
+        <button class="btn" data-section="prompts">Prompt 结果</button>
+        <button class="btn" data-section="tasks">下月任务</button>
+        <button class="btn" data-section="merchant-report">商家月报</button>
+      </div>
+
+      <header class="topbar">
+        <div class="store-title">
+          <h1>晴川日料 Bistro｜AI 可见性体检</h1>
+          <p class="sub">杭州 · 湖滨/武林 · 日料 · 约会/生日/朋友聚餐 · 测试入口：豆包、DeepSeek、Kimi、腾讯元宝</p>
+        </div>
+        <div class="actions">
+          <button class="btn">导出月报</button>
+          <button class="btn">复制任务单</button>
+          <button class="btn primary">生成复测计划</button>
+        </div>
+      </header>
+
+      <div class="toolbar" aria-label="筛选">
+        <div class="field">
+          <label for="scenario">消费场景</label>
+          <select id="scenario">
+            <option>全部场景</option>
+            <option>约会</option>
+            <option>生日</option>
+            <option>朋友聚餐</option>
+            <option>游客打卡</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="platform">AI 入口</label>
+          <select id="platform">
+            <option>全部入口</option>
+            <option>豆包</option>
+            <option>DeepSeek</option>
+            <option>Kimi</option>
+            <option>腾讯元宝</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="competitor">重点竞品</label>
+          <select id="competitor">
+            <option>全部竞品</option>
+            <option>山岚割烹</option>
+            <option>月见和牛寿喜烧</option>
+            <option>青木酒场</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="cycle">复测周期</label>
+          <select id="cycle">
+            <option>本月初测</option>
+            <option>7 天后复测</option>
+            <option>30 天后复测</option>
+          </select>
+        </div>
+      </div>
+
+      <section id="overview" class="section active" aria-label="总览">
+        <div class="metrics">
+          <div class="metric">
+            <div class="caption">AI 推荐可见性</div>
+            <div class="value">42</div>
+            <div class="bar"><span style="width:42%"></span></div>
+          </div>
+          <div class="metric">
+            <div class="caption">强推荐率</div>
+            <div class="value">15%</div>
+            <div class="bar"><span style="width:15%; background:var(--amber)"></span></div>
+          </div>
+          <div class="metric">
+            <div class="caption">竞品压制率</div>
+            <div class="value">45%</div>
+            <div class="bar"><span style="width:45%; background:var(--rose)"></span></div>
+          </div>
+          <div class="metric">
+            <div class="caption">信息准确性</div>
+            <div class="value">70</div>
+            <div class="bar"><span style="width:70%; background:var(--green)"></span></div>
+          </div>
+          <div class="metric">
+            <div class="caption">可转任务率</div>
+            <div class="value">60%</div>
+            <div class="bar"><span style="width:60%; background:var(--blue)"></span></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <h2>关键发现</h2>
+            <div class="findings">
+              <div class="finding risk">
+                <h3>约会场景没有稳定占位</h3>
+                <p class="sub">4 个 AI 入口中，3 个优先推荐山岚割烹或月见和牛寿喜烧，晴川日料只在 DeepSeek 中第 4 位出现。</p>
+              </div>
+              <div class="finding warn">
+                <h3>生日场景缺少可抽取信息</h3>
+                <p class="sub">公开内容里缺少生日服务、预约、布置、甜品和包间相关描述，导致 AI 更容易推荐竞品。</p>
+              </div>
+              <div class="finding">
+                <h3>抖音团购没有成为推荐理由</h3>
+                <p class="sub">团购标题偏套餐清单，缺少“约会双人餐”“纪念日小聚”等场景表达。</p>
+              </div>
+              <div class="finding good">
+                <h3>朋友聚餐场景有基础</h3>
+                <p class="sub">多个回答提到菜品丰富和价格适中，可通过达人 Brief 和短视频脚本继续放大。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>场景占位地图</h2>
+            <div class="scenario-map">
+              <div class="scenario-row">
+                <span>约会</span>
+                <div class="track"><span class="target" style="width:28%"></span><span class="competitor" style="width:72%; left:28%"></span></div>
+                <span class="tag rose">弱</span>
+              </div>
+              <div class="scenario-row">
+                <span>生日</span>
+                <div class="track"><span class="target" style="width:18%"></span><span class="competitor" style="width:82%; left:18%"></span></div>
+                <span class="tag rose">弱</span>
+              </div>
+              <div class="scenario-row">
+                <span>聚餐</span>
+                <div class="track"><span class="target" style="width:54%"></span><span class="competitor" style="width:46%; left:54%"></span></div>
+                <span class="tag amber">中</span>
+              </div>
+              <div class="scenario-row">
+                <span>游客</span>
+                <div class="track"><span class="target" style="width:22%"></span><span class="competitor" style="width:78%; left:22%"></span></div>
+                <span class="tag rose">弱</span>
+              </div>
+              <div class="scenario-row">
+                <span>团购</span>
+                <div class="track"><span class="target" style="width:36%"></span><span class="competitor" style="width:64%; left:36%"></span></div>
+                <span class="tag amber">中低</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="prompts" class="section" aria-label="Prompt 结果">
+        <div class="panel">
+          <h2>Prompt 结果表</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>问题</th>
+                  <th>场景</th>
+                  <th>入口</th>
+                  <th>目标门店</th>
+                  <th>竞品</th>
+                  <th>判断</th>
+                  <th>可转任务</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>杭州湖滨附近适合约会的日料店推荐，环境好一点，人均 200 左右。</td>
+                  <td><span class="tag rose">约会</span></td>
+                  <td>豆包</td>
+                  <td>未出现</td>
+                  <td>山岚割烹</td>
+                  <td>约会氛围信号不足</td>
+                  <td>约会短视频 3 条、双人套餐标题</td>
+                </tr>
+                <tr>
+                  <td>杭州适合过生日的日料店，有仪式感，最好能提前预约。</td>
+                  <td><span class="tag amber">生日</span></td>
+                  <td>Kimi</td>
+                  <td>未出现</td>
+                  <td>山岚割烹、月见和牛寿喜烧</td>
+                  <td>生日服务说明缺失</td>
+                  <td>生日 FAQ、达人 Brief</td>
+                </tr>
+                <tr>
+                  <td>杭州湖滨抖音上有团购、适合两个人吃的日料推荐。</td>
+                  <td><span class="tag blue">团购</span></td>
+                  <td>DeepSeek</td>
+                  <td>第 4 位</td>
+                  <td>月见和牛寿喜烧</td>
+                  <td>团购信息出现但理由泛化</td>
+                  <td>团购副标题、套餐卖点重写</td>
+                </tr>
+                <tr>
+                  <td>杭州湖滨适合朋友聚餐的日料，安静一点，人均 200 左右。</td>
+                  <td><span class="tag green">聚餐</span></td>
+                  <td>腾讯元宝</td>
+                  <td>第 2 位</td>
+                  <td>青木酒场</td>
+                  <td>有基础，但缺少差异化理由</td>
+                  <td>朋友聚餐脚本、评价关键词</td>
+                </tr>
+                <tr>
+                  <td>第一次去杭州玩，逛完湖滨后适合去哪家日料吃饭？</td>
+                  <td><span class="tag rose">游客</span></td>
+                  <td>豆包</td>
+                  <td>未出现</td>
+                  <td>青木酒场</td>
+                  <td>游客路线内容缺失</td>
+                  <td>游客打卡路线视频、小红书选题</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="tasks" class="section" aria-label="下月任务">
+        <div class="panel">
+          <h2>下月优化任务单</h2>
+          <div class="tasks">
+            <div class="task">
+              <div class="task-head">
+                <h3>团购标题场景化</h3>
+                <span class="tag rose">高</span>
+              </div>
+              <p>把“晴川双人套餐”改为“湖滨约会双人日料套餐”，副标题补充纪念日、生日、小聚。</p>
+              <span class="tag blue">团购</span>
+            </div>
+            <div class="task">
+              <div class="task-head">
+                <h3>约会短视频 6 条</h3>
+                <span class="tag rose">高</span>
+              </div>
+              <p>围绕灯光、座位、双人套餐、出片位置和安静氛围生成脚本与分镜。</p>
+              <span class="tag teal">短视频</span>
+            </div>
+            <div class="task">
+              <div class="task-head">
+                <h3>生日服务 FAQ</h3>
+                <span class="tag amber">中</span>
+              </div>
+              <p>补齐预约、布置、甜品、包间、停车、人均和是否适合拍照等问答资产。</p>
+              <span class="tag green">资料</span>
+            </div>
+            <div class="task">
+              <div class="task-head">
+                <h3>达人 Brief 统一</h3>
+                <span class="tag rose">高</span>
+              </div>
+              <p>要求达人必须说清“湖滨约会日料”“生日小聚”“双人套餐”，并拍摄团购核销路径。</p>
+              <span class="tag blue">达人</span>
+            </div>
+            <div class="task">
+              <div class="task-head">
+                <h3>评价关键词引导</h3>
+                <span class="tag amber">中</span>
+              </div>
+              <p>在真实顾客评价中自然补充“约会、生日、氛围、服务、出片”等关键词。</p>
+              <span class="tag green">评价</span>
+            </div>
+            <div class="task">
+              <div class="task-head">
+                <h3>7 天复测</h3>
+                <span class="tag teal">中</span>
+              </div>
+              <p>用同一组高意图问题复测约会、生日、团购场景，观察是否减少错误描述。</p>
+              <span class="tag">复测</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="merchant-report" class="section" aria-label="商家月报">
+        <div class="report">
+          <div class="report-block">
+            <h2>给商家的月报摘要</h2>
+            <p>本月我们测试了 20 个本地消费问题，覆盖约会、生日、朋友聚餐和游客打卡场景。晴川日料在朋友聚餐场景中有一定推荐基础，但在约会和生日场景中弱于竞品。主要原因不是菜品问题，而是公开内容里缺少明确的场景表达，AI 和用户都不容易把门店和“约会/生日”联系起来。</p>
+            <p>下月建议重点补齐三个动作：团购标题场景化、发布约会/生日短视频、统一达人探店口径。完成后复测同一批问题，观察门店是否能进入更多推荐答案。</p>
+          </div>
+
+          <div class="split-list">
+            <div class="report-block">
+              <h2>服务商可讲亮点</h2>
+              <p>不是承诺 AI 排名，而是把“未来用户问 AI 时是否被正确推荐”转成抖音经营动作，帮助商家理解为什么要持续补内容、改团购和做达人。</p>
+            </div>
+            <div class="report-block">
+              <h2>下次复测问题</h2>
+              <p>重点复测“湖滨约会日料”“生日聚餐日料”“抖音团购双人餐”“游客逛湖滨后吃什么”四类问题。</p>
+            </div>
+          </div>
+
+          <div class="report-block">
+            <h2>信号源地图</h2>
+            <div class="source-list">
+              <div class="source-row">
+                <span class="tag blue">抖音门店页</span>
+                <p class="sub">有团购，但套餐标题偏清单，需要改成场景化表达。</p>
+              </div>
+              <div class="source-row">
+                <span class="tag teal">达人探店</span>
+                <p class="sub">已有内容，但口径不统一，需要统一“约会、生日、双人套餐”。</p>
+              </div>
+              <div class="source-row">
+                <span class="tag amber">点评/地图</span>
+                <p class="sub">评价关键词偏菜品，需要补充场景、服务和预约相关信息。</p>
+              </div>
+              <div class="source-row">
+                <span class="tag rose">小红书</span>
+                <p class="sub">内容薄弱，建议做游客打卡和纪念日约会选题。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll("[data-section]");
+    const sections = document.querySelectorAll(".section");
+
+    function showSection(id) {
+      sections.forEach((section) => {
+        section.classList.toggle("active", section.id === id);
+      });
+
+      tabs.forEach((tab) => {
+        const isActive = tab.dataset.section === id;
+        tab.classList.toggle("active", isActive);
+        if (tab.classList.contains("btn")) {
+          tab.classList.toggle("primary", isActive);
+        }
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => showSection(tab.dataset.section));
+    });
+  </script>
+</body>
+</html>
