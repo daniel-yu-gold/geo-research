@@ -64,6 +64,7 @@
 - [43_first_send_channel_packet.md](./43_first_send_channel_packet.md)：第一轮可发送入口核验包，列出 B002 优先对象的官网联系入口、发送顺序和回填规则。
 - [44_priority_lead_source_evidence.md](./44_priority_lead_source_evidence.md)：优先外联线索来源证据，说明 L014/L017/L015 的公开信号、适配原因和仍需访谈核验的问题。
 - [45_first_outreach_send_payloads.md](./45_first_outreach_send_payloads.md)：第一轮外联可复制发送文本，覆盖官网表单、在线客服/微信、邮件和电话开场。
+- [46_current_market_refresh_and_risk_calibration.md](./46_current_market_refresh_and_risk_calibration.md)：2026 当前市场刷新与风险校准，检查桌面判断是否仍成立，并明确下一轮访谈最该验证的问题。
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
