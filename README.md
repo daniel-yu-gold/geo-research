@@ -67,6 +67,7 @@
 - [prototype/store-ai-visibility.html](./prototype/store-ai-visibility.html)：可打开的门店 AI 可见性工作台低保真原型。
 - [tools/prompt-builder.html](./tools/prompt-builder.html)：本地 Prompt Builder，填写门店信息后生成测试问题并导出 CSV。
 - [tools/answer-scorer.html](./tools/answer-scorer.html)：本地 Answer Scorer，人工标注 AI 回答并生成评分 CSV、证据索引 CSV 和商家报告 Markdown 草稿。
+- [tools/validation-dashboard.html](./tools/validation-dashboard.html)：本地验证状态看板，导入 CSV 后自动排除示例/占位记录并显示真实证据完成度。
 - [templates/](./templates/)：真实门店、竞品、prompt、AI 回答、访谈记录、外联批次、证据索引和评分表 CSV 模板。
 - [evidence/](./evidence/)：真实测试截图、访谈纪要、报告版本等证据留档目录。
 
